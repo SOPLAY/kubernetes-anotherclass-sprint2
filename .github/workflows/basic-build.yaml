@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/base_cicd.yaml
+      - .github/workflows/basic-build.yaml
 
 jobs:
   build:
