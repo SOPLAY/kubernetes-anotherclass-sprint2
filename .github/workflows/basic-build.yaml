@@ -20,7 +20,7 @@ on:
       - .github/workflows/basic-build.yaml
 
 env:
-  artifact-key: ${{ github.repository }}-${{ github.sha }}-build-output
+  artifact-key: ${{ github.repository_id }}-${{ github.sha }}-build-output
 
 jobs:
   build:
