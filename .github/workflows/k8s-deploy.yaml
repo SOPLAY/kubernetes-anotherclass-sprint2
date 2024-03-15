@@ -38,4 +38,6 @@ jobs:
           mkdir -p ~/.kube
           echo '${{secrets.KUBE_CONFIG}}' | base64 -d > ~/.kube/config
       - name: deploy k8s
-        run: kubectl apply -f ./${{env.checkout-path}}
+        run: |
+          kubectl get po -A
+          kubectl apply -f ./${{env.checkout-path}}
