@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        kubectl-version: ['v1.27.2']
+        kubectl-version: ['v1.27.10']
     needs: [docker-build-and-push]
     steps:
       - name: checkout repository
