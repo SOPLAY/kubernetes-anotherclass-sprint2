@@ -6,6 +6,12 @@ on:
       artifact-key:
         description: 'build file artifact key'
         value: ${{ jobs.build.outputs.artifact-key }}
+    inputs:
+      is_workflow_call:
+        type: boolean
+        required: false
+        default: true
+
   workflow_dispatch:
   push:
     branches:
@@ -25,7 +31,6 @@ jobs:
       matrix:
         java-version: [17]
         gradle-version: [7.6.1]
-        event_name: ['${{ github.event_name }}']
     steps:
       - name: check out source repo
         uses: actions/checkout@v4
@@ -51,7 +56,7 @@ jobs:
 
       - name: upload jar
         uses: actions/upload-artifact@v3
-        if: github.event_name == 'workflow_call'
+        if: inputs.is_workflow_call
         with:
           name: ${{ env.artifact-key }}
           path: build/libs/app-0.0.1-SNAPSHOT.jar
