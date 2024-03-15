@@ -46,6 +46,7 @@ jobs:
       - name: deploy to k8s
         working-directory: ${{env.checkout-path}}
         run: |
+          kubectl get po -A
           kubectl apply -f ./namespace.yaml
           kubectl apply -f ./pv.yaml
           kubectl apply -f ./pvc.yaml
