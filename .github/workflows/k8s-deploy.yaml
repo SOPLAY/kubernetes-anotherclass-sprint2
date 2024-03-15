@@ -1,0 +1,41 @@
+name: k8s deploy
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/docker-image-build.yaml
+      - .github/workflows/k8s-deploy.yaml
+
+env:
+  checkout-path: 2121/deploy/k8s
+
+jobs:
+  docker-build-and-push:
+    uses: ./.github/workflows/docker-image-build.yaml
+    secrets: inherit
+
+  k8s-deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        kubectl-version: ['v1.27.2']
+    needs: [docker-build-and-push]
+    steps:
+      - name: checkout repository
+
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: ${{ env.checkout-path }}
+      - name: setup kubectle
+        uses: azure/setup-kubectl@v3
+        with:
+          version: ${{matrix.kubectl-version}}
+      # - name: setup helm
+      #   uses: azure/setup-helm@v3
+      - name: setup kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo '${{secrets.KUBE_CONFIG}}' | base64 -d > ~/.kube/config
+      - name: deploy k8s
+        run: kubectl apply -f ./${{env.checkout-path}}
