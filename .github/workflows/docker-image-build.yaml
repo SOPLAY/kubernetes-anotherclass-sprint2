@@ -1,4 +1,4 @@
-name: container build
+name: docker-image-build
 
 on:
   workflow_dispatch:
@@ -6,7 +6,8 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/container-build.yaml
+      - .github/workflows/docker-image-build.yaml
+      - .github/workflows/basic-build.yaml
 
 env:
   checkout-path: 2121/build/docker

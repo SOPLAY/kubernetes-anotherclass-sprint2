@@ -21,6 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifact-key: ${{ env.artifact-key }}
+    strategy:
+      matrix:
+        java-version: [17]
+        gradle-version: [7.6.1]
+        event_name: ['${{ github.event_name }}']
     steps:
       - name: check out source repo
         uses: actions/checkout@v4
@@ -31,12 +36,12 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: adopt
-          java-version: 17
+          java-version: ${{ matrix.java-version }}
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: 7.6.1
+          gradle-version: ${{ matrix.gradle-version }}
 
       - name: Fix gradlew permissions
         run: chmod +x ./gradlew
@@ -48,6 +53,6 @@ jobs:
         uses: actions/upload-artifact@v3
         if: github.event_name == 'workflow_call'
         with:
-          name: ${{ env.artifact-key}}
+          name: ${{ env.artifact-key }}
           path: build/libs/app-0.0.1-SNAPSHOT.jar
           retention-days: 1
