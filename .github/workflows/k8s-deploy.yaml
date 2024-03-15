@@ -31,13 +31,26 @@ jobs:
         uses: azure/setup-kubectl@v3
         with:
           version: ${{matrix.kubectl-version}}
-      # - name: setup helm
-      #   uses: azure/setup-helm@v3
+
       - name: setup kubeconfig
+        uses: oracle-actions/configure-kubectl-oke@v1.3.2
+        env:
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+        with:
+          cluster: ${{ secrets.OCI_OKE_CLUSTER_ID }}
+
+      - name: deploy to k8s
+        working-directory: ${{env.checkout-path}}
         run: |
-          mkdir -p ~/.kube
-          echo '${{secrets.KUBE_CONFIG}}' | base64 -d > ~/.kube/config
-      - name: deploy k8s
-        run: |
-          kubectl get po -A
-          kubectl apply -f ./${{env.checkout-path}}
+          kubectl apply -f ./namespace.yaml
+          kubectl apply -f ./pv.yaml
+          kubectl apply -f ./pvc.yaml
+          kubectl apply -f ./configmap.yaml
+          kubectl apply -f ./secret.yaml
+          kubectl apply -f ./service.yaml
+          kubectl apply -f ./hpa.yaml
+          kubectl apply -f ./deployment.yaml
