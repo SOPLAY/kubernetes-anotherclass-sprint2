@@ -103,20 +103,36 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+volumes: 
+  - name: secret-datasource
+    secret:
+      secretName: api-tester-2221-postgresql
 
 # Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+volumeMounts:
+  - name: secret-datasource
+    mountPath: /usr/src/myapp/datasource
+
 
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
+
+configmap:
+  data:
+    properties:
+      spring_profiles_active: "dev"
+      application_role: "ALL"
+      postgresql_filepath: "/usr/src/myapp/datasource/postgresql-info.yaml"
+
+secret:
+  data:
+    properties:
+      postgresql:
+        postgresql-info.yaml: |
+          driver-class-name: "org.postgresql.Driver"
+          url: "jdbc:postgresql://postgresql:5431"
+          username: "dev"
+          password: "dev123"

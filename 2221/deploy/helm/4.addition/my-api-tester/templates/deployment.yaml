@@ -40,6 +40,9 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "my-api-tester.fullname" . }}-properties
           startupProbe:
             {{- toYaml .Values.probe.startupProbe | nindent 12 }}
           livenessProbe:
