@@ -10,6 +10,7 @@ metadata:
     version: 1.0.0
     managed-by: kubectl
 spec:
+  storageClassName: oci
   resources:
     requests:
       storage: 2G
